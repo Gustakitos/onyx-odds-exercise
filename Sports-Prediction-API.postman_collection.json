@@ -1,0 +1,349 @@
+{
+  "info": {
+    "name": "Sports Prediction API",
+    "description": "Complete API collection for the Sports Prediction application",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Get API Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "health"]
+            },
+            "description": "Check if the API is running and database is connected"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Matches",
+      "item": [
+        {
+          "name": "Get All Matches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/matches?limit=10&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "matches"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of matches to return (1-100)"
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Number of matches to skip"
+                },
+                {
+                  "key": "sport",
+                  "value": "",
+                  "description": "Filter by sport name",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "Filter by status (scheduled, in_progress, completed)",
+                  "disabled": true
+                },
+                {
+                  "key": "team",
+                  "value": "",
+                  "description": "Filter by team name",
+                  "disabled": true
+                },
+                {
+                  "key": "date",
+                  "value": "",
+                  "description": "Filter by date (YYYY-MM-DD)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all matches with optional filtering and pagination"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Match by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/matches/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "matches", "1"]
+            },
+            "description": "Get a specific match by its ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Matches by Sport",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/matches/sport/Football?limit=10&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "matches", "sport", "Football"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Get all matches for a specific sport"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Matches by Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/matches/status/scheduled?limit=10&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "matches", "status", "scheduled"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Get matches by status (scheduled, in_progress, completed)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Sports",
+      "item": [
+        {
+          "name": "Get All Sports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/sports",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "sports"]
+            },
+            "description": "Get all available sports"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Sport by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/sports/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "sports", "1"]
+            },
+            "description": "Get a specific sport by its ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Teams by Sport",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/sports/1/teams",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "sports", "1", "teams"]
+            },
+            "description": "Get all teams for a specific sport"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Matches by Sport ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/sports/1/matches?limit=10&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "sports", "1", "matches"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Get all matches for a specific sport by sport ID"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Teams",
+      "item": [
+        {
+          "name": "Get All Teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/teams",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "teams"]
+            },
+            "description": "Get all teams"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Teams by Sport",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/teams?sport_id=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "teams"],
+              "query": [
+                {
+                  "key": "sport_id",
+                  "value": "1",
+                  "description": "Filter teams by sport ID"
+                }
+              ]
+            },
+            "description": "Get teams filtered by sport ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Team by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/teams/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "teams", "1"]
+            },
+            "description": "Get a specific team by its ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Matches by Team",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/teams/1/matches?limit=10&offset=0",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "teams", "1", "matches"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            },
+            "description": "Get all matches for a specific team"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Set timestamp for requests",
+          "pm.globals.set('timestamp', new Date().toISOString());"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Common tests for all requests",
+          "pm.test('Response time is less than 2000ms', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+          "});",
+          "",
+          "pm.test('Response has success field', function () {",
+          "    const jsonData = pm.response.json();",
+          "    pm.expect(jsonData).to.have.property('success');",
+          "});",
+          "",
+          "// Test for successful responses",
+          "if (pm.response.code === 200) {",
+          "    pm.test('Success response has data field', function () {",
+          "        const jsonData = pm.response.json();",
+          "        pm.expect(jsonData.success).to.be.true;",
+          "        pm.expect(jsonData).to.have.property('data');",
+          "    });",
+          "}",
+          "",
+          "// Test for error responses",
+          "if (pm.response.code >= 400) {",
+          "    pm.test('Error response has message field', function () {",
+          "        const jsonData = pm.response.json();",
+          "        pm.expect(jsonData.success).to.be.false;",
+          "        pm.expect(jsonData).to.have.property('message');",
+          "    });",
+          "}"
+        ]
+      }
+    }
+  ]
+}

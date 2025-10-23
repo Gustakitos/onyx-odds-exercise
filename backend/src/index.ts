@@ -5,6 +5,9 @@ import dotenv from 'dotenv';
 import { initDatabase } from './config/database';
 
 import healthRoutes from './routes/health';
+import matchRoutes from './routes/matches';
+import sportRoutes from './routes/sports';
+import teamRoutes from './routes/teams';
 
 dotenv.config();
 
@@ -19,7 +22,10 @@ app.use(cors({
 
 app.use(express.json());
 
-app.use('/api/health', healthRoutes);
+app.use('/api/v1/health', healthRoutes);
+app.use('/api/v1/matches', matchRoutes);
+app.use('/api/v1/sports', sportRoutes);
+app.use('/api/v1/teams', teamRoutes);
 
 async function startServer() {
   try {
