@@ -2,7 +2,7 @@
 
 [![Node.js](https://img.shields.io/badge/Node.js-22.13.1-green.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-15.x-black.svg)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-14.x-black.svg)](https://nextjs.org/)
 [![Express](https://img.shields.io/badge/Express-4.x-lightgrey.svg)](https://expressjs.com/)
 
 A full-stack sports prediction platform that allows users to view and filter sports matches, teams, and sports data. Built with modern web technologies including Next.js, Express.js, TypeScript, and SQLite.
