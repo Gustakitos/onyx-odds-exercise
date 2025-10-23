@@ -1,211 +1,110 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
-interface HealthStatus {
-  success: boolean;
-  message: string;
-  timestamp: string;
-  version: string;
-  database: string;
-  environment: string;
-}
+import { useState, useMemo } from "react";
+import { Header } from "@/components/header";
+import { Filters } from "@/components/filters";
+import { MatchCard } from "@/components/match-card";
+import { useMatches } from "@/hooks/useMatches";
+import { filterMatches } from "@/lib/filters";
 
-// Environment variable validation
-const getApiBaseUrl = (): string => {
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-  
-  if (!apiBaseUrl) {
-    console.error("NEXT_PUBLIC_API_BASE_URL environment variable is not set");
-    throw new Error("API base URL is not configured. Please check your environment variables.");
-  }
-  
-  // Remove trailing slash if present
-  return apiBaseUrl.replace(/\/$/, '');
-};
+export default function HomePage() {
+  const [sport, setSport] = useState<string>("all");
+  const [dateRange, setDateRange] = useState<string>("all");
+  const [search, setSearch] = useState<string>("");
 
-export default function Home() {
-  const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { matches, loading, error, refetch } = useMatches();
 
-  useEffect(() => {
-    const fetchHealthStatus = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        const apiBaseUrl = getApiBaseUrl();
-        const response = await fetch(`${apiBaseUrl}/api/v1/health`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          // Add timeout to prevent hanging requests
-          signal: AbortSignal.timeout(10000), // 10 second timeout
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data: HealthStatus = await response.json();
-        setHealthStatus(data);
-      } catch (err) {
-        console.error("Failed to fetch health status:", err);
-        
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An unexpected error occurred while fetching health status");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchHealthStatus();
-  }, []);
+  const filteredMatches = useMemo(() => {
+    return filterMatches(matches, { sport, dateRange, search });
+  }, [matches, sport, dateRange, search]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-900">
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            🏆 Sports Prediction App
-          </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Predict the outcomes of your favorite sports matches and compete
-            with friends!
-          </p>
-        </div>
+    <div className="min-h-screen bg-background">
+      <Header />
 
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Features */}
-          <Card>
-            <CardHeader>
-              <div className="text-3xl mb-2">⚽</div>
-              <CardTitle>Multiple Sports</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Football, Basketball, Soccer, Baseball, and Hockey predictions
-              </CardDescription>
-            </CardContent>
-          </Card>
+      <main className="container mx-auto px-4 py-8 max-w-7xl">
+        <Filters
+          sport={sport}
+          dateRange={dateRange}
+          search={search}
+          onSportChange={setSport}
+          onDateRangeChange={setDateRange}
+          onSearchChange={setSearch}
+        />
 
-          <Card>
-            <CardHeader>
-              <div className="text-3xl mb-2">📊</div>
-              <CardTitle>Real-time Stats</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Track your prediction accuracy and compete on leaderboards
-              </CardDescription>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <div className="text-3xl mb-2">👥</div>
-              <CardTitle>Social Features</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>
-                Share predictions and compete with friends and family
-              </CardDescription>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Backend Status */}
-        <div className="max-w-2xl mx-auto mt-12">
-          <Card>
-            <CardHeader>
-              <CardTitle>🔧 System Status</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {loading ? (
-                <div className="flex items-center justify-center py-4">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                  <span className="ml-2 text-muted-foreground">
-                    Checking backend...
-                  </span>
-                </div>
-              ) : error ? (
-                <div className="text-center py-4">
-                  <Badge variant="destructive">
-                    ❌ {error}
-                  </Badge>
-                </div>
-              ) : healthStatus ? (
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">API Status:</span>
-                    <Badge
-                      variant={healthStatus.success ? "default" : "destructive"}
-                    >
-                      {healthStatus.success ? "✅ Online" : "❌ Offline"}
-                    </Badge>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">Database:</span>
-                    <Badge variant="outline">{healthStatus.database}</Badge>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">Version:</span>
-                    <Badge variant="outline">{healthStatus.version}</Badge>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">Environment:</span>
-                    <Badge variant="secondary">
-                      {healthStatus.environment}
-                    </Badge>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-4">
-                  <Badge variant="destructive">
-                    ❌ Unable to connect to backend
-                  </Badge>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Getting Started */}
-        <div className="max-w-2xl mx-auto mt-12 text-center">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">
-                Ready to Start Predicting?
-              </CardTitle>
-              <CardDescription>
-                Join thousands of sports fans making predictions and competing
-                for glory!
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex gap-4 justify-center">
-                <Button size="lg">Sign Up</Button>
-                <Button variant="outline" size="lg">
-                  View Matches
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-16">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading matches...</p>
+            </div>
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="text-destructive mb-4">
+              <svg
+                className="w-16 h-16 mx-auto mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold mb-2">Error loading matches</h3>
+            <p className="text-muted-foreground mb-6 max-w-md">{error}</p>
+            <button
+              onClick={() => refetch()}
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : filteredMatches.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="text-muted-foreground mb-4">
+              <svg
+                className="w-16 h-16 mx-auto mb-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold mb-2">No matches found</h3>
+            <p className="text-muted-foreground mb-6 max-w-md">
+              Try adjusting your filters or search terms to find more matches.
+            </p>
+            <button
+              onClick={() => {
+                setSport("all");
+                setDateRange("all");
+                setSearch("");
+              }}
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+            >
+              Reset Filters
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredMatches.map((match) => (
+              <MatchCard key={match.id} match={match} />
+            ))}
+          </div>
+        )}
+      </main>
     </div>
   );
 }

@@ -86,7 +86,6 @@ export class DatabaseUtils {
       let total = 0;
       let hasError = false;
 
-      // Count total operations
       seedData.forEach(({ data }) => {
         total += data.length;
       });
@@ -124,12 +123,10 @@ export class DatabaseUtils {
   async clearTables(tables: string[]): Promise<QueryResult> {
     const queries: string[] = [];
 
-    // First, delete all data from tables
     tables.forEach(table => {
       queries.push(`DELETE FROM ${table}`);
     });
 
-    // Then reset the auto-increment sequences for each table
     tables.forEach(table => {
       queries.push(`DELETE FROM sqlite_sequence WHERE name='${table}'`);
     });
